@@ -1,5 +1,5 @@
 <?php
-session_start();
+include './includes/database.php';
 
 unset($_SESSION["ADMIN_ID"]);
 unset($_SESSION["ADMIN_LOGIN"]);
