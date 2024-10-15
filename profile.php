@@ -1,10 +1,11 @@
 <?php require "./includes/header.php"; ?>
 
-<?php if (!isset($_SESSION["USER_LOGIN"])) { ?>
-    <script>
-        window.location.href = "index.php";
-    </script>
-<?php } ?>
+<?php
+if (!isset($_SESSION["USER_ID"])) {
+    header("Location: login.php");
+    die();
+}
+?>
 
 <div class="bg-white min-h-screen my-20">
     <div class="container mx-auto">

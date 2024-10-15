@@ -1,10 +1,11 @@
 <?php require "./includes/header.php"; ?>
 
-<?php if (isset($_SESSION["USER_LOGIN"]) && $_SESSION["USER_LOGIN"] == "yes") { ?>
-    <script>
-        window.location.href = "my_order.php";
-    </script>
-<?php } ?>
+<?php
+if (isset($_SESSION["USER_ID"])) {
+    header("Location: index.php");
+    die();
+}
+?>
 
 <div class="flex justify-center items-center h-screen bg-white">
     <div class="bg-white rounded-lg shadow-md p-8 shadow-black w-[60%]">
@@ -56,7 +57,7 @@
                     if (data.status === "success") {
                         $("#" + data.field).html(data.msg);
                         $("#login_form")[0].reset();
-                        window.location.href = "my_order.php";
+                        window.location.href = "index.php";
                     }
                 }
             })

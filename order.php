@@ -1,6 +1,13 @@
 <?php require "./includes/header.php"; ?>
 
 <?php
+if (!isset($_SESSION["USER_ID"])) {
+    header("Location: login.php");
+    die();
+}
+?>
+
+<?php
 if (!isset($_GET["id"])) {
     echo "There is something wrong, try again later.";
     die();
@@ -86,22 +93,6 @@ if (!isset($_GET["id"])) {
             </thead>
             <tbody id="orders"></tbody>
         </table>
-        <form class="my-6" id="update_order_form">
-            <h2 class="text-3xl font-semibold mb-5">Update Order</h2>
-            <span id="form_error" class="text-red-500 font-bold text-center my-3 error_field"></span>
-            <span id="form_success" class="text-green-500 font-bold text-center my-3 error_field"></span>
-            <div class="mb-4">
-                <label for="status">Order Status:</label>
-                <select class="w-full px-4 py-2 rounded-md border border-gray-300" name="status" id="status">
-                    <option value="">Select order status</option>
-                </select>
-            </div>
-            <input type="hidden" name="action" value="update" />
-            <input type="hidden" name="id" value=<?php echo $_GET["id"]; ?> />
-            <button type="submit" id="update_order_submit"
-                class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-200">Update
-                Order</button>
-        </form>
         <a href="./includes/download_order.php?id=<?php echo $_GET['id']; ?>" target="_blank"
             class="w-fit block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors disabled:bg-blue-200 mt-5">Download
             Order</a>
@@ -110,27 +101,9 @@ if (!isset($_GET["id"])) {
 
 <script>
     $(document).ready(function () {
-        function fetchOrderStatus() {
-            $.ajax({
-                url: "http://localhost:3000/admin/includes/order.php?status=true",
-                type: "get",
-                success: function (result) {
-                    let data = $.parseJSON(result);
-
-                    data.forEach(status => {
-                        $("#status").append(`
-                            <option value="${status.id}">${status.name}</option>
-                        `);
-                    })
-                }
-            })
-        }
-
-        fetchOrderStatus();
-
         function fetchOrder() {
             $.ajax({
-                url: "http://localhost:3000/admin/includes/order.php?id=<?php echo $_GET['id']; ?>",
+                url: "http://localhost:3000/includes/order.php?id=<?php echo $_GET['id']; ?>",
                 type: "get",
                 success: function (result) {
                     var data = $.parseJSON(result);
@@ -171,44 +144,11 @@ if (!isset($_GET["id"])) {
                             </tr>
                         `);
                     });
-
-                    $("#status").val(data.order.order_status);
                 }
             })
         }
 
         fetchOrder();
-
-        $("#update_order_form").on("submit", function (e) {
-            $(".error_field").html("");
-            $("#update_order_submit").attr("disabled", true);
-            $("#update_order_submit").text("Processing...");
-
-            var formData = new FormData(this);
-
-            $.ajax({
-                url: "http://localhost:3000/admin/includes/order.php",
-                type: "post",
-                data: $("#update_order_form").serialize(),
-                success: function (result) {
-                    $("#update_order_submit").attr("disabled", false);
-                    $("#update_order_submit").text("Update Order");
-
-                    var data = $.parseJSON(result);
-
-                    if (data.status === "error") {
-                        $("#form_error").html(data.msg);
-                    }
-
-                    if (data.status === "success") {
-                        $("#form_success").html(data.msg);
-                        fetchOrder();
-                    }
-                }
-            })
-
-            e.preventDefault();
-        })
     })
 </script>
 

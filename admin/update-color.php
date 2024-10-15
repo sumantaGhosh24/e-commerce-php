@@ -3,6 +3,7 @@
 <?php
 if (!isset($_GET["id"])) {
     echo "There is something wrong, try again later.";
+    die();
 }
 ?>
 
